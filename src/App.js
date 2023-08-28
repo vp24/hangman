@@ -24,15 +24,22 @@ function App() {
         }
     };
 
+    const isGameOver = isWordGuessed || incorrectGuessCount >= maxIncorrectGuesses;
     const isWordGuessed = word.split('').every(letter => guessedLetters.includes(letter));
 
     return (
         <div className="App">
-            <WordDisplay word={word} guessedLetters={guessedLetters} />
-            <GuessInput onGuess={handleGuess} />
+            <div className="WordDisplay">
+                <WordDisplay word={word} guessedLetters={guessedLetters} />
+            </div>
+            {!isGameOver ? <GuessInput onGuess={handleGuess} /> : null} 
 
             {isWordGuessed ? <div>Congratulations! You won!</div> :
-                incorrectGuessCount >= maxIncorrectGuesses ? <div>You ran out of guesses, try again!</div> :
+                incorrectGuessCount >= maxIncorrectGuesses ? 
+                <div>
+                    <div>You ran out of guesses!</div>
+                    <div>The word was: {word}</div>
+                </div> : 
                 <WrongGuesses word={word} guessedLetters={guessedLetters} />
             }
 
@@ -43,7 +50,6 @@ function App() {
 
 function WordDisplay({ word, guessedLetters }) {
     const display = word.split('').map(letter => guessedLetters.includes(letter) ? letter : '_').join(' ');
-
     return <div>{display}</div>;
 }
 
@@ -73,8 +79,7 @@ function GuessInput({ onGuess }) {
 
 function WrongGuesses({ word, guessedLetters }) {
     const wrongGuesses = guessedLetters.filter(letter => !word.includes(letter));
-
-    return <div>Incorrect Guesses: {wrongGuesses.join(', ')}</div>;
+    return <div className="WrongGuesses">Incorrect Guesses: {wrongGuesses.join(', ')}</div>;
 }
 
 export default App;
