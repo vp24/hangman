@@ -6,6 +6,7 @@ function App() {
     const [word, setWord] = useState(getRandomWord());
     const [guessedLetters, setGuessedLetters] = useState([]);
     const [incorrectGuessCount, setIncorrectGuessCount] = useState(0);
+    const [fullWordGuess, setFullWordGuess] = useState("");
     const maxIncorrectGuesses = 7;
 
     const remainingGuesses = maxIncorrectGuesses - incorrectGuessCount;
@@ -26,17 +27,38 @@ function App() {
         }
     };
 
+    const handleFullWordGuessSubmit = (e) => {
+        e.preventDefault();
+        if (fullWordGuess.toUpperCase() !== word) {
+            setIncorrectGuessCount(prevCount => prevCount + 1);
+        } else {
+            setGuessedLetters(word.split(''));
+        }
+        setFullWordGuess("");  // Reset the full word guess input
+    };
+
     const isGameOver = incorrectGuessCount >= maxIncorrectGuesses;
     const isWordGuessed = word.split('').every(letter => guessedLetters.includes(letter));
 
     return (
         <div className="App">
             <h1>Word Rescue</h1>
-            <div className="WordDisplay">
-                <WordDisplay word={word} guessedLetters={guessedLetters} />
-            </div>
+            <WordDisplay word={word} guessedLetters={guessedLetters} />
 
-            {!isGameOver && !isWordGuessed ? <GuessInput onGuess={handleGuess} /> : null} 
+            {!isGameOver && !isWordGuessed ? (
+                <div>
+                    <GuessInput onGuess={handleGuess} />
+                    <form onSubmit={handleFullWordGuessSubmit}>
+                        <input 
+                            type="text" 
+                            value={fullWordGuess} 
+                            onChange={e => setFullWordGuess(e.target.value)} 
+                            placeholder="Guess the full word"
+                        />
+                        <button type="submit">Submit Full Word</button>
+                    </form>
+                </div>
+            ) : null}
 
             {isWordGuessed ? <div>Congratulations! You won!</div> :
                 isGameOver ? 
@@ -78,6 +100,7 @@ function GuessInput({ onGuess }) {
                 value={inputValue} 
                 onChange={e => setInputValue(e.target.value)} 
                 maxLength="1" 
+                placeholder="Guess a letter"
             />
             <button type="submit">Guess</button>
         </form>
@@ -86,7 +109,7 @@ function GuessInput({ onGuess }) {
 
 function WrongGuesses({ word, guessedLetters }) {
     const wrongGuesses = guessedLetters.filter(letter => !word.includes(letter));
-    return <div className="WrongGuesses">Incorrect Guesses: {wrongGuesses.join(', ')}</div>;
+    return <div>Incorrect Guesses: {wrongGuesses.join(', ')}</div>;
 }
 
 export default App;
