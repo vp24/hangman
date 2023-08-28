@@ -20,7 +20,6 @@ function App() {
     const handleGuess = (letter) => {
         if (!guessedLetters.includes(letter)) {
             setGuessedLetters([...guessedLetters, letter]);
-
             if (!word.includes(letter)) {
                 setIncorrectGuessCount(prevCount => prevCount + 1);
             }
@@ -34,7 +33,7 @@ function App() {
         } else {
             setGuessedLetters(word.split(''));
         }
-        setFullWordGuess("");  // Reset the full word guess input
+        setFullWordGuess("");
     };
 
     const isGameOver = incorrectGuessCount >= maxIncorrectGuesses;
@@ -48,19 +47,20 @@ function App() {
             {!isGameOver && !isWordGuessed ? (
                 <div>
                     <GuessInput onGuess={handleGuess} />
-                    <form onSubmit={handleFullWordGuessSubmit}>
+                    <form onSubmit={handleFullWordGuessSubmit} className="full-word-guess-form">
                         <input 
                             type="text" 
                             value={fullWordGuess} 
                             onChange={e => setFullWordGuess(e.target.value)} 
                             placeholder="Guess the full word"
                         />
-                        <button type="submit">Submit Full Word</button>
+                        <button type="submit">Submit</button>
                     </form>
                 </div>
             ) : null}
 
-            {isWordGuessed ? <div>Congratulations! You won!</div> :
+            {isWordGuessed ? 
+                <div>Congratulations! You won!</div> :
                 isGameOver ? 
                 <div>
                     <div>You ran out of guesses!</div>
