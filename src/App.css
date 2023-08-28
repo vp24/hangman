@@ -67,3 +67,14 @@ button:disabled {
   margin-top: 20px;
   color: #f00;
 }
+
+/* Guess the full word form */
+.small-form {
+  margin-top: 20px;
+  gap: 5px;
+}
+
+.small-form input[type="text"], .small-form button {
+  font-size: 14px;
+  padding: 3px 7px;
+}
