@@ -8,6 +8,8 @@ function App() {
     const [incorrectGuessCount, setIncorrectGuessCount] = useState(0);
     const maxIncorrectGuesses = 7;
 
+    const remainingGuesses = maxIncorrectGuesses - incorrectGuessCount;
+
     const resetGame = () => {
         setWord(getRandomWord());
         setGuessedLetters([]);
@@ -24,23 +26,28 @@ function App() {
         }
     };
 
-    const isGameOver = isWordGuessed || incorrectGuessCount >= maxIncorrectGuesses;
+    const isGameOver = incorrectGuessCount >= maxIncorrectGuesses;
     const isWordGuessed = word.split('').every(letter => guessedLetters.includes(letter));
 
     return (
         <div className="App">
+            <h1>Word Rescue</h1>
             <div className="WordDisplay">
                 <WordDisplay word={word} guessedLetters={guessedLetters} />
             </div>
-            {!isGameOver ? <GuessInput onGuess={handleGuess} /> : null} 
+
+            {!isGameOver && !isWordGuessed ? <GuessInput onGuess={handleGuess} /> : null} 
 
             {isWordGuessed ? <div>Congratulations! You won!</div> :
-                incorrectGuessCount >= maxIncorrectGuesses ? 
+                isGameOver ? 
                 <div>
                     <div>You ran out of guesses!</div>
                     <div>The word was: {word}</div>
                 </div> : 
-                <WrongGuesses word={word} guessedLetters={guessedLetters} />
+                <>
+                    <WrongGuesses word={word} guessedLetters={guessedLetters} />
+                    <div>Remaining Guesses: {remainingGuesses}</div>
+                </>
             }
 
             <button onClick={resetGame}>Restart Game</button>
